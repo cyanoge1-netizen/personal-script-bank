@@ -1,83 +1,81 @@
 # Personal-Scriptbank
 
-এই রিপোজিটরিটিতে আমার ব্যক্তিগত ক্রস-প্ল্যাটফর্ম অটোমেশন স্ক্রিপ্ট এবং টুলগুলো সংরক্ষিত আছে। সিএসই (CSE) শিক্ষার্থী হিসেবে দৈনন্দিন ল্যাব ওয়ার্ক, মিডিয়া ব্যাকআপ এবং সামগ্রিক প্রোডাক্টিভিটি বাড়ানোর লক্ষ্যে এই স্ক্রিপ্টগুলো তৈরি করা হয়েছে।
+এই রিপোজিটরিটিতে আমার ব্যক্তিগত ক্রস-প্ল্যাটফর্ম অটোমেশন স্ক্রিপ্ট এবং প্রোডাক্টিভিটি টুলগুলো সুশৃঙ্খল ক্যাটাগরিভিত্তিক ফোল্ডারে সংরক্ষিত আছে। সিএসই (CSE) শিক্ষার্থী হিসেবে ল্যাব অ্যাসাইনমেন্ট, প্রশ্নপত্র সংরক্ষণ এবং ফাইল অটোমেশন সহজ করার লক্ষ্যে এই প্রজেক্টটি তৈরি।
+
+---
 
 ## 🚀 সমর্থিত প্ল্যাটফর্ম (Cross-Platform Support)
-- **Android (Termux)**
-- **Linux (Ubuntu, Debian, Fedora, Arch)**
-- **macOS**
-- **Windows**
+- 📱 **Android (Termux / Proot)**
+- 🐧 **Linux (Ubuntu, Debian, Fedora, Arch)**
+- 🍎 **macOS**
+- 🪟 **Windows (PowerShell / CMD / WSL)**
 
 ---
 
-## 📂 বিষয়বস্তু (Contents)
-1. **Cross-Platform Media Backup Utility (`media_backup.py`):**
-   - ডিভাইস থেকে ছবি এবং ভিডিও ফাইল স্বয়ংক্রিয়ভাবে স্ক্যান করে 64-বিট স্ট্রিমিং জিপ আর্কাইভে ব্যাকআপ তৈরি করে।
-   - RAM-Safe চাঙ্কড MD5 হ্যাশিংয়ের মাধ্যমে ফাইল ও জিপ ফাইলের শতভাগ ডেটা ইনটিগ্রিটি নিশ্চিত করে।
-   - প্ল্যাটফর্ম-ভিত্তিক ইন্টেলিজেন্ট পাথ ডিটেকশন ও সিস্টেম ফোল্ডার এক্সক্লুশন (যেমন Android, Windows, Mac, Linux সিস্টেম ডিরেক্টরি)।
-   - নিরাপদ প্রিভিউ (`--dry-run`) এবং যাচাইকৃত ব্যাকআপের পর সোর্স ফাইল ক্লিনিং অপশন (`--clean`)।
+## 📂 ক্যাটাগরি এবং স্ক্রিপ্ট ইনডেক্স (Directory Structure)
 
-2. **Fast C/C++ Generator (`fast_create.py`):**
-   - মাল্টি-প্রসেসিং (`concurrent.futures`) ব্যবহার করে নিমিষেই ল্যাব অ্যাসাইনমেন্টের জন্য প্রয়োজনীয় C/C++ কঙ্কাল (skeleton template) ফাইল তৈরি করে।
-
----
-
-## 🛠️ টেকনিক্যাল স্পেসিফিকেশন
-- **Language:** Python 3 (3.7+)
-- **Dependencies:** 
-  - Standard Library: `argparse`, `pathlib`, `zipfile`, `hashlib`, `platform`, `concurrent.futures` (জিরো এক্সটার্নাল ডিপেন্ডেন্সি দিয়েও চলে)
-  - Optional: `tqdm` (টার্মিনালে প্রগ্রেস বার ভিজ্যুয়ালাইজেশনের জন্য)
-
----
-
-## 💻 ব্যবহারের নিয়ম (Usage)
-
-### ১. মিডিয়া ব্যাকআপ ইউটিলিটি (`media_backup.py`)
-
-**স্বয়ংক্রিয় মোড (ডিফল্ট পাথ অনুযায়ী):**
-```bash
-python3 media_backup.py
 ```
-
-**প্রিভিউ মোড (ফাইল না মুছে বা আর্কাইভ না করে শুধু স্ক্যান রিপোর্ট দেখতে):**
-```bash
-python3 media_backup.py -s /path/to/source --dry-run
-```
-
-**কাস্টম সোর্স ও আউটপুট ডিরেক্টরি নির্ধারণ:**
-```bash
-python3 media_backup.py -s ~/Pictures -o ~/Backups
-```
-
-**অডিও ফাইল অন্তর্ভুক্ত করতে:**
-```bash
-python3 media_backup.py -s ~/Media --include-audio
-```
-
-**আর্কাইভ ভেরিফিকেশন সফল হলে সোর্স ফাইল মুছে ফেলার জন্য (নিরাপদ ক্লিনিং):**
-```bash
-python3 media_backup.py -s /path/to/media --clean
+personal-script-bank/
+├── academic_tools/          # সিলেট ইঞ্জিনিয়ারিং কলেজের শিক্ষা ও ল্যাব সম্পর্কিত টুলস
+│   ├── download_questions.py# এসইসি টার্ম ফাইনাল ও অ্যাডমিশন টেস্ট প্রশ্ন ডাউনলোডার
+│   ├── fast_create.py       # মাল্টি-কোর C/C++ স্কেলিটন ফাইল জেনারেটর
+│   └── README.md            # বিস্তারিত গাইড ও ব্যবহারবিধি
+│
+├── backup_utilities/        # মিডিয়া ও সিস্টেম ব্যাকআপ ইউটিলিটিজ
+│   ├── media_backup.py      # ক্রস-প্ল্যাটফর্ম Zip64 ও MD5 ইনটিগ্রিটি ব্যাকআপ টুল
+│   └── README.md            # বিস্তারিত গাইড ও ব্যবহারবিধি
+│
+├── .gitignore               # পাইথন ও এনভায়রনমেন্ট ইগনোর রুলস
+└── README.md                # রিপোজিটরি মাস্টার ইনডেক্স
 ```
 
 ---
 
-### ২. ফাস্ট C/C++ ফাইল জেনারেটর (`fast_create.py`)
+## 🛠️ মাস্টার ইনডেক্স টেবিল (Master Table)
 
-**ল্যাব টাস্কের জন্য ১০টি C ফাইল তৈরি করতে:**
+| বিভাগ (Category) | স্ক্রিপ্ট | ভাষা | সংক্ষিপ্ত বিবরণ |
+| :--- | :--- | :--- | :--- |
+| [**Academic Tools**](academic_tools/) | [`download_questions.py`](academic_tools/download_questions.py) | Python 3 | এসইসির CSE, EEE, CE ও ভর্তি পরীক্ষার ৪১টি প্রশ্নপত্র স্বয়ংক্রিয় ডাউনলোড |
+| [**Academic Tools**](academic_tools/) | [`fast_create.py`](academic_tools/fast_create.py) | Python 3 | ল্যাব ক্লাসের জন্য দ্রুত সমান্তরালে C/C++ স্কেলিটন ফাইল তৈরি |
+| [**Backup Utilities**](backup_utilities/) | [`media_backup.py`](backup_utilities/media_backup.py) | Python 3 | ছবি/ভিডিও স্বয়ংক্রিয় ব্যাকআপ, চাঙ্কড MD5 ভেরিফিকেশন ও সেফ ক্লিনার |
+
+---
+
+## 💻 দ্রুত ব্যবহারের নির্দেশিকা (Quick Start)
+
+### ১. প্রশ্নপত্র ডাউনলোড (SEC Question Downloader)
 ```bash
+cd academic_tools
+
+# ইন্টারঅ্যাক্টিভ ভিজ্যুয়াল মেনু
+python3 download_questions.py
+
+# সরাসরি সিএসই (CSE) প্রশ্ন ডাউনলোড
+python3 download_questions.py cse
+```
+
+### ২. ল্যাব ফাইল তৈরি (C/C++ File Generator)
+```bash
+cd academic_tools
+
+# ১০টি C স্কেলিটন ফাইল তৈরি
 python3 fast_create.py lab_task 10 -d ./my_lab
 ```
 
-**C++ এক্সটেনশন দিয়ে ফাইল তৈরি করতে:**
+### ৩. মিডিয়া ব্যাকআপ (Media Archiver)
 ```bash
-python3 fast_create.py assignment 5 -d ./cpp_tasks -e .cpp
+cd backup_utilities
+
+# ব্যাকআপ নেওয়া ও ইনটিগ্রিটি যাচাই
+python3 media_backup.py -s ~/Pictures -o ~/Backups
 ```
 
 ---
 
 ## 🎯 লক্ষ্য
-কোডিং ও কম্পিউটিং এনভায়রনমেন্টকে আরও সুশৃঙ্খল করা এবং সিস্টেম অটোমেশনের মাধ্যমে সময় বাঁচিয়ে প্রোডাক্টিভিটি ত্বরান্বিত করা।
+কোডিং ও কম্পিউটিং এনভায়রনমেন্টকে আরও সুশৃঙ্খল করা এবং সিস্টেম অটোমেশনের মাধ্যমে সময় বাঁচিয়ে একাডেমিক প্রোডাক্টিভিটি বৃদ্ধি করা।
 
 ## 👤 অবদানকারী (Author)
 **Suleman Ahmed Shuvo**  
-সিএসই, সিলেট ইঞ্জিনিয়ারিং কলেজ (SEC)।
+কম্পিউটার সায়েন্স অ্যান্ড ইঞ্জিনিয়ারিং (CSE), ব্যাচ: ১৯  
+সিলেট ইঞ্জিনিয়ারিং কলেজ (SEC)।

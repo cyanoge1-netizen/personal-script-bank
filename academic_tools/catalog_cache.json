@@ -1,0 +1,252 @@
+{
+  "scanned_at": "2026-11-13T09:18:44Z",
+  "catalog": {
+    "cse": {
+      "tag": "CSE",
+      "folder": "CSE",
+      "name": "Computer Science & Engineering",
+      "icon": "💻",
+      "items": [
+        [
+          "Semester_1-1",
+          "CSE_Session_2024-2025_Semester_1-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/3/540d426a-232e-4283-8702-2820766698c7.pdf"
+        ],
+        [
+          "Semester_1-1",
+          "CSE_Session_2023-2024_Semester_1-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/a764fc3a7f3442f4a1b7c8787b5cb034.pdf"
+        ],
+        [
+          "Semester_1-2",
+          "CSE_Session_2023-2024_Semester_1-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/3/c63ea47e-620f-4f64-b3d9-ad88bd618f39.pdf"
+        ],
+        [
+          "Semester_2-1",
+          "CSE_Session_2022-2023_Semester_2-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/ed7b570ab7624281a32b139542be11d8.pdf"
+        ],
+        [
+          "Semester_1-2",
+          "CSE_Session_2022-2023_Semester_1-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/3b4532e7d88f494291410c34e4c60c61.pdf"
+        ],
+        [
+          "Semester_2-2",
+          "CSE_Session_2022-2023_Semester_2-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/3/86f8cdcb-d394-48bd-abbc-0d0f450bfd0a.pdf"
+        ],
+        [
+          "Semester_2-1",
+          "CSE_Session_2021-2022_Semester_2-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/2bd2c7181fea4130acd3c6966e919037.pdf"
+        ],
+        [
+          "Semester_3-1",
+          "CSE_Session_2021-2022_Semester_3-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/0/eb7c53dd-e762-4f76-aeb7-d464f74c4aba.pdf"
+        ],
+        [
+          "Semester_2-2",
+          "CSE_Session_2021-2022_Semester_2-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/90202faae3a94c2680414e69ec43c7d8.pdf"
+        ],
+        [
+          "Semester_3-1",
+          "CSE_Session_2020-2021_Semester_3-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/8498bc59ceb447a9893c1cd20a35ea95.pdf"
+        ],
+        [
+          "Semester_4-1",
+          "CSE_Session_2020-2021_Semester_4-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/0/8b84d636-b959-470e-a00a-7129d79a6b56.pdf"
+        ],
+        [
+          "Semester_3-2",
+          "CSE_Session_2020-2021_Semester_3-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/d34bf1cf44e04235afede107cf8efc55.pdf"
+        ],
+        [
+          "Semester_4-2",
+          "CSE_Session_2020-2021_Semester_4-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/8/e3455521-3e8f-4289-98d5-2bd350cb0e21.pdf"
+        ],
+        [
+          "Semester_4-1",
+          "CSE_Session_2019-2020_Semester_4-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/a4325f0d0a2f413ea04341f0656dd49f.pdf"
+        ],
+        [
+          "Semester_4-2",
+          "CSE_Session_2019-2020_Semester_4-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/b077229d35954dc7a34dd9ac538a1c86.pdf"
+        ]
+      ]
+    },
+    "eee": {
+      "tag": "EEE",
+      "folder": "EEE",
+      "name": "Electrical & Electronic Engineering",
+      "icon": "⚡",
+      "items": [
+        [
+          "Semester_1-1",
+          "EEE_Session_2023-2024_Semester_1-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/c97238ab87044783996fbea6a089e60f.pdf"
+        ],
+        [
+          "Semester_2-1",
+          "EEE_Session_2022-2023_Semester_2-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/9682aa97c1bd4adcbb8fa36bf3e2d30a.pdf"
+        ],
+        [
+          "Semester_1-2",
+          "EEE_Session_2022-2023_Semester_1-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/90c7db0747604dd18dfdd077b3452cdd.pdf"
+        ],
+        [
+          "Semester_2-1",
+          "EEE_Session_2021-2022_Semester_2-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/d723d480fdeb4781a77ae484c8635383.pdf"
+        ],
+        [
+          "Semester_2-2",
+          "EEE_Session_2021-2022_Semester_2-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/05e3ca57f1214bde99b7064ed4b24252.pdf"
+        ],
+        [
+          "Semester_3-1",
+          "EEE_Session_2020-2021_Semester_3-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/fd5324e6012a46f8a3547fb7bb224c72.pdf"
+        ],
+        [
+          "Semester_3-2",
+          "EEE_Session_2020-2021_Semester_3-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/6bb2a0ef6c0b4c639805e319428a1336.pdf"
+        ],
+        [
+          "Semester_4-2",
+          "EEE_Session_2020-2021_Semester_4-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/8/fe8ce101-80fd-4911-b11f-752ee81e3a1f.pdf"
+        ],
+        [
+          "Semester_4-1",
+          "EEE_Session_2019-2020_Semester_4-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/bc728e3434c24869a6022f9eeec2127b.pdf"
+        ],
+        [
+          "Semester_4-2",
+          "EEE_Session_2019-2020_Semester_4-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/7a3544f63946468e8e380d56bcb9a709.pdf"
+        ]
+      ]
+    },
+    "civil": {
+      "tag": "CE ",
+      "folder": "CE",
+      "name": "Civil Engineering",
+      "icon": "🏗️",
+      "items": [
+        [
+          "Semester_1-1",
+          "CE_Session_2024-2025_Semester_1-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/3/8570cc69-54d6-4f79-83b0-eeedaab9f713.pdf"
+        ],
+        [
+          "Semester_1-1",
+          "CE_Session_2023-2024_Semester_1-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/632becd847ce43ec89f06a3c61ceab5f.pdf"
+        ],
+        [
+          "Semester_1-2",
+          "CE_Session_2023-2024_Semester_1-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/3/693de707-3598-4e62-8618-bc9a2e57b370.pdf"
+        ],
+        [
+          "Semester_2-1",
+          "CE_Session_2022-2023_Semester_2-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/4d54d5531b1448e398265ecfa77838d8.pdf"
+        ],
+        [
+          "Semester_1-2",
+          "CE_Session_2022-2023_Semester_1-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/2e02e7887a624d488dfda5fad29d0da9.pdf"
+        ],
+        [
+          "Semester_2-2",
+          "CE_Session_2022-2023_Semester_2-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/3/902428b3-7eaf-42b0-8241-dc1b663e3e9a.pdf"
+        ],
+        [
+          "Semester_2-1",
+          "CE_Session_2021-2022_Semester_2-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/aa76965a60a344829462a0d5079fec9a.pdf"
+        ],
+        [
+          "Semester_3-1",
+          "CE_Session_2021-2022_Semester_3-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/0/172b4706-2056-457e-9f49-2c9f4a248de6.pdf"
+        ],
+        [
+          "Semester_2-2",
+          "CE_Session_2021-2022_Semester_2-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/868c2a93b644482ab9bfb5680cddb1ed.pdf"
+        ],
+        [
+          "Semester_3-1",
+          "CE_Session_2020-2021_Semester_3-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/45199ff44b29488286c8bced26419546.pdf"
+        ],
+        [
+          "Semester_4-1",
+          "CE_Session_2020-2021_Semester_4-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/0/4af64d75-830c-4b98-87d1-6aa3801e39c2.pdf"
+        ],
+        [
+          "Semester_3-2",
+          "CE_Session_2020-2021_Semester_3-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/ceb5159cfb8748db806b4c6e7700a294.pdf"
+        ],
+        [
+          "Semester_4-2",
+          "CE_Session_2020-2021_Semester_4-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/8/5676b0d9-9185-4990-ab72-51008b888966.pdf"
+        ],
+        [
+          "Semester_4-1",
+          "CE_Session_2019-2020_Semester_4-1.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/c5edad4785634b998e3535f17ddc3a20.pdf"
+        ],
+        [
+          "Semester_4-2",
+          "CE_Session_2019-2020_Semester_4-2.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/5e97965220fa4902b6591af9ac110f13.pdf"
+        ]
+      ]
+    },
+    "admission": {
+      "tag": "ADM",
+      "folder": "Admission_Test",
+      "name": "Undergraduate Admission Tests",
+      "icon": "🎯",
+      "items": [
+        [
+          "",
+          "SEC_Admission_Test_Question_2025-2026.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2026/3/d119f009-31f2-4db8-a0b1-3ec153e0d864.pdf"
+        ],
+        [
+          "",
+          "SEC_Admission_Test_Question_2024-2025.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/2c5ef297412946dc880f2ca0006f8d08.pdf"
+        ],
+        [
+          "",
+          "SEC_Admission_Test_Question_2023-2024.pdf",
+          "https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-sec/2024/12/51144ea9275941c0bf9869a7e27d2647.pdf"
+        ]
+      ]
+    }
+  }
+}

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
 """
 ====================================================================
 Sylhet Engineering College (sec.ac.bd) Question Archive Downloader
@@ -15,6 +17,7 @@ import json
 import shutil
 import platform
 import argparse
+import base64
 import concurrent.futures
 from pathlib import Path
 
@@ -95,14 +98,20 @@ class UI:
         return " " * left + text + " " * right
 
     @classmethod
-    def box_line(cls, content: str, width: int, border_color: str = None) -> str:
+    def box_line(cls, content: str, width: int, border_color: str | None = None) -> str:
         b_col = border_color or cls.CYAN
         v_len = len(cls.strip_ansi(content))
+        max_content_len = width - 2
+        if v_len > max_content_len:
+            plain = cls.strip_ansi(content)
+            cutoff = plain[:max_content_len - 3] + "..."
+            content = cutoff
+            v_len = len(cutoff)
         pad = max(0, width - 2 - v_len)
         return f"{b_col}{cls.VERT}{cls.RESET}{content}{' ' * pad}{b_col}{cls.VERT}{cls.RESET}"
 
     @classmethod
-    def box_top(cls, width: int, title: str = "", border_color: str = None) -> str:
+    def box_top(cls, width: int, title: str = "", border_color: str | None = None) -> str:
         b_col = border_color or cls.CYAN
         if not title:
             return f"{b_col}{cls.TOP_LEFT}{cls.HORIZ * (width - 2)}{cls.TOP_RIGHT}{cls.RESET}"
@@ -111,18 +120,18 @@ class UI:
         return f"{b_col}{cls.TOP_LEFT}{cls.HORIZ * 2} {title} {b_col}{cls.HORIZ * remaining}{cls.TOP_RIGHT}{cls.RESET}"
 
     @classmethod
-    def box_bottom(cls, width: int, border_color: str = None) -> str:
+    def box_bottom(cls, width: int, border_color: str | None = None) -> str:
         b_col = border_color or cls.CYAN
         return f"{b_col}{cls.BOTTOM_LEFT}{cls.HORIZ * (width - 2)}{cls.BOTTOM_RIGHT}{cls.RESET}"
 
     @classmethod
-    def box_divider(cls, width: int, border_color: str = None) -> str:
+    def box_divider(cls, width: int, border_color: str | None = None) -> str:
         b_col = border_color or cls.CYAN
         return f"{b_col}{cls.DIV_LEFT}{cls.HORIZ * (width - 2)}{cls.DIV_RIGHT}{cls.RESET}"
 
 
 # ==================== Cross-OS Detection & Storage Resolution ====================
-def detect_operating_system():
+def detect_operating_system() -> tuple[str, str, str]:
     system = platform.system().lower()
     is_android = os.path.exists("/sdcard") or "com.termux" in os.environ.get("PREFIX", "") or "ANDROID_ROOT" in os.environ
     
@@ -139,47 +148,54 @@ def detect_operating_system():
         return "Linux", f"Linux ({dist})", "🐧"
 
 
-def resolve_platform_storage(os_type: str) -> tuple[Path, str]:
-    """Determine best default directory based on operating system."""
+def resolve_platform_storage(os_type: str, dry_run: bool = False) -> tuple[Path, str, bool]:
+    """Determine best default directory based on operating system. Returns (path, label, warn_storage)."""
     if os_type == "Android":
         if os.path.exists("/sdcard") and os.access("/sdcard", os.W_OK):
             target = Path("/sdcard/Questions")
             try:
-                target.mkdir(parents=True, exist_ok=True)
-                return target, "SDcard Storage (/sdcard/Questions)"
+                if not dry_run:
+                    target.mkdir(parents=True, exist_ok=True)
+                return target, "SDcard Storage (/sdcard/Questions)", False
             except Exception:
                 pass
 
         termux_shared = Path.home() / "storage" / "shared" / "Questions"
         if termux_shared.parent.exists() and os.access(termux_shared.parent, os.W_OK):
-            termux_shared.mkdir(parents=True, exist_ok=True)
-            return termux_shared, "Termux Shared Storage (~/storage/shared/Questions)"
+            if not dry_run:
+                termux_shared.mkdir(parents=True, exist_ok=True)
+            return termux_shared, "Termux Shared Storage (~/storage/shared/Questions)", False
 
         termux_home = Path.home() / "Questions"
-        termux_home.mkdir(parents=True, exist_ok=True)
-        return termux_home, "Termux Home (~/Questions)"
+        if not dry_run:
+            termux_home.mkdir(parents=True, exist_ok=True)
+        return termux_home, "Termux Private Storage (~/Questions)", True
 
     elif os_type == "Windows":
         downloads = Path.home() / "Downloads" / "SEC_Questions"
-        downloads.mkdir(parents=True, exist_ok=True)
-        return downloads, "Windows Downloads (Downloads\\SEC_Questions)"
+        if not dry_run:
+            downloads.mkdir(parents=True, exist_ok=True)
+        return downloads, "Windows Downloads (Downloads\\SEC_Questions)", False
 
     elif os_type == "macOS":
         mac_downloads = Path.home() / "Downloads" / "SEC_Questions"
-        mac_downloads.mkdir(parents=True, exist_ok=True)
-        return mac_downloads, "macOS Downloads (~/Downloads/SEC_Questions)"
+        if not dry_run:
+            mac_downloads.mkdir(parents=True, exist_ok=True)
+        return mac_downloads, "macOS Downloads (~/Downloads/SEC_Questions)", False
 
     else:  # Linux Desktop / Server
         linux_downloads = Path.home() / "Downloads" / "SEC_Questions"
         try:
             if (Path.home() / "Downloads").exists():
-                linux_downloads.mkdir(parents=True, exist_ok=True)
-                return linux_downloads, "Linux Downloads (~/Downloads/SEC_Questions)"
+                if not dry_run:
+                    linux_downloads.mkdir(parents=True, exist_ok=True)
+                return linux_downloads, "Linux Downloads (~/Downloads/SEC_Questions)", False
         except Exception:
             pass
         linux_home = Path.home() / "Questions"
-        linux_home.mkdir(parents=True, exist_ok=True)
-        return linux_home, "Linux Home (~/Questions)"
+        if not dry_run:
+            linux_home.mkdir(parents=True, exist_ok=True)
+        return linux_home, "Linux Home (~/Questions)", False
 
 
 # ==================== Network Engine Detection ====================
@@ -191,7 +207,7 @@ except ImportError:
     HAVE_REQUESTS = False
 
 
-def run_environment_checks(custom_dest: Path | None = None) -> Path:
+def run_environment_checks(custom_dest: Path | None = None, dry_run: bool = False) -> Path:
     w = UI.width()
     os_type, os_label, os_icon = detect_operating_system()
 
@@ -217,21 +233,30 @@ def run_environment_checks(custom_dest: Path | None = None) -> Path:
         print(UI.box_line(f"  {UI.GREEN}✔{UI.RESET} {UI.BOLD}Network Engine:{UI.RESET}      {UI.CYAN}Standard urllib.request{UI.RESET} {UI.DIM}(Zero-dependency){UI.RESET}", w, border_color=UI.MINT))
 
     # 4. Storage Resolution
+    warn_storage = False
     if custom_dest:
         target_dir = custom_dest.expanduser().resolve()
-        target_dir.mkdir(parents=True, exist_ok=True)
+        if not dry_run:
+            target_dir.mkdir(parents=True, exist_ok=True)
         storage_label = "Custom User Specified Directory"
     else:
-        target_dir, storage_label = resolve_platform_storage(os_type)
+        target_dir, storage_label, warn_storage = resolve_platform_storage(os_type, dry_run=dry_run)
 
     print(UI.box_line(f"  {UI.GREEN}✔{UI.RESET} {UI.BOLD}Storage Target:{UI.RESET}      {UI.WHITE}{target_dir}{UI.RESET}", w, border_color=UI.MINT))
     print(UI.box_line(f"    {UI.DIM}└─ Destination: {storage_label}{UI.RESET}", w, border_color=UI.MINT))
+
+    if warn_storage:
+        print(UI.box_line("", w, border_color=UI.MINT))
+        print(UI.box_line(f"  {UI.AMBER}⚠  Notice: Android shared storage is not accessible.{UI.RESET}", w, border_color=UI.MINT))
+        print(UI.box_line(f"     {UI.DIM}Saving to Termux home. To download directly to /sdcard,{UI.RESET}", w, border_color=UI.MINT))
+        print(UI.box_line(f"     {UI.DIM}run: {UI.YELLOW}termux-setup-storage{UI.DIM} and tap {UI.WHITE}'Allow'{UI.DIM}.{UI.RESET}", w, border_color=UI.MINT))
+
     print(UI.box_bottom(w, border_color=UI.MINT))
     print()
     return target_dir
 
 
-# ==================== Question Dataset ====================
+# ==================== Built-in Question Dataset (Fallback Catalog) ====================
 ALL_QUESTIONS = {
     "cse": {
         "tag": "CSE",
@@ -312,6 +337,16 @@ ALL_QUESTIONS = {
     }
 }
 
+# Default Known Static Pages on sec.ac.bd
+DEFAULT_PAGE_URLS = {
+    "cse": "https://sec.ac.bd/pages/static-pages/6922dcee933eb65569e12cea",
+    "eee": "https://sec.ac.bd/pages/static-pages/6922dcc7933eb65569e12025",
+    "civil": "https://sec.ac.bd/pages/static-pages/6922dc8a933eb65569e10e30",
+    "admission": "https://sec.ac.bd/pages/static-pages/6922deab933eb65569e1c7dd",
+}
+
+CATALOG_CACHE_FILE = Path(__file__).resolve().parent / "catalog_cache.json"
+
 CHOICE_MAPPING = {
     "1": ["cse"],
     "cse": ["cse"],
@@ -325,9 +360,301 @@ CHOICE_MAPPING = {
     "adm": ["admission"],
     "5": ["cse", "eee", "civil", "admission"],
     "all": ["cse", "eee", "civil", "admission"],
+    "6": ["unsorted"],
+    "unsorted": ["unsorted"],
 }
 
 
+# ==================== Live Web Scanning & Discovery ====================
+def fetch_url_text(url: str, timeout: int = 20) -> str:
+    """Fetch URL response text using requests (if available) or urllib.request."""
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    if HAVE_REQUESTS:
+        resp = requests.get(url, headers=headers, timeout=timeout)
+        resp.raise_for_status()
+        return resp.text
+    else:
+        req = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.read().decode("utf-8", errors="replace")
+
+
+def discover_endpoints_from_home() -> dict[str, str]:
+    """Crawl sec.ac.bd homepage to discover archive static-page links dynamically."""
+    try:
+        html = fetch_url_text("https://sec.ac.bd", timeout=12)
+        links = re.findall(r'href=[\"\'](/pages/static-pages/[a-f0-9]+)[\"\'][^>]*>(.*?)<', html)
+        discovered = {}
+        for href, text in links:
+            t = text.strip()
+            full_url = f"https://sec.ac.bd{href}"
+            if "সিএসই" in t:
+                discovered["cse"] = full_url
+            elif "ইইই" in t:
+                discovered["eee"] = full_url
+            elif "সিই" in t:
+                discovered["civil"] = full_url
+            elif "Admission Test" in t or ("ভর্তি" in t and "প্রশ্ন" in t):
+                discovered["admission"] = full_url
+        return discovered
+    except Exception:
+        return {}
+
+
+def parse_page_questions(dept_key: str, html: str) -> tuple[list[tuple[str, str, str]], list[tuple[str, str, str]]]:
+    """
+    Parses previous-year question entries from HTML.
+    Returns (standard_items, unsorted_items), where each item is (sem_folder, filename, url).
+    """
+    standard_items: list[tuple[str, str, str]] = []
+    unsorted_items: list[tuple[str, str, str]] = []
+    captured_urls: set[str] = set()
+
+    dept_tag = "CE" if dept_key == "civil" else dept_key.upper()
+    tables = re.findall(r'<table[^>]*>.*?</table>', html, re.DOTALL)
+
+    if dept_key == "admission":
+        for t in tables:
+            rows = re.findall(r'<tr[^>]*>(.*?)</tr>', t, re.DOTALL)
+            for r in rows:
+                cells = re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', r, re.DOTALL)
+                if len(cells) >= 2:
+                    row_text = re.sub(r'<[^>]+>', ' ', r).strip()
+                    year_m = re.search(r'(\d{4}-\d{4})', row_text)
+                    link_m = re.search(r'href=[\"\']([^\"\']+\.pdf)[\"\']', r)
+                    if year_m and link_m:
+                        session = year_m.group(1)
+                        pdf_url = link_m.group(1).strip()
+                        fn = f"SEC_Admission_Test_Question_{session}.pdf"
+                        standard_items.append(("", fn, pdf_url))
+                        captured_urls.add(pdf_url)
+    else:
+        for t in tables:
+            rows = re.findall(r'<tr[^>]*>(.*?)</tr>', t, re.DOTALL)
+            if not rows:
+                continue
+            r0_text = re.sub(r'<[^>]+>', ' ', rows[0]).strip()
+            session_m = re.search(r'(\d{4}-\d{4})', r0_text)
+            if not session_m:
+                continue
+            session = session_m.group(1)
+
+            for r in rows[1:]:
+                cells = re.findall(r'<t[dh][^>]*>(.*?)</t[dh]>', r, re.DOTALL)
+                for i in range(0, len(cells) - 1, 2):
+                    sem_text = re.sub(r'<[^>]+>', ' ', cells[i]).strip()
+                    sem_m = re.search(r'(\d-\d)', sem_text)
+                    link_m = re.search(r'href=[\"\']([^\"\']+\.pdf)[\"\']', cells[i + 1])
+                    if sem_m and link_m:
+                        sem = sem_m.group(1)
+                        pdf_url = link_m.group(1).strip()
+                        fn = f"{dept_tag}_Session_{session}_Semester_{sem}.pdf"
+                        folder = f"Semester_{sem}"
+                        standard_items.append((folder, fn, pdf_url))
+                        captured_urls.add(pdf_url)
+
+    # Capture any additional unparsed PDF links on the page into Unsorted
+    all_pdf_links = re.findall(r'href=[\"\']([^\"\']+\.pdf)[\"\']', html)
+    for p_url in all_pdf_links:
+        p_url = p_url.strip()
+        if p_url not in captured_urls:
+            raw_fn = p_url.split("/")[-1]
+            unsorted_items.append(("", f"{dept_tag}_Unsorted_{raw_fn}", p_url))
+            captured_urls.add(p_url)
+
+    return standard_items, unsorted_items
+
+
+def scan_live_catalog() -> tuple[dict, str, str]:
+    """
+    Scans sec.ac.bd for previous-year questions.
+    Returns (catalog, source_status, message), where source_status is 'LIVE', 'CACHED', or 'FALLBACK'.
+    """
+    catalog = {
+        "cse": {
+            "tag": "CSE",
+            "badge_color": UI.CYAN,
+            "folder": "CSE",
+            "name": "Computer Science & Engineering",
+            "icon": "💻",
+            "items": []
+        },
+        "eee": {
+            "tag": "EEE",
+            "badge_color": UI.YELLOW,
+            "folder": "EEE",
+            "name": "Electrical & Electronic Engineering",
+            "icon": "⚡",
+            "items": []
+        },
+        "civil": {
+            "tag": "CE ",
+            "badge_color": UI.GREEN,
+            "folder": "CE",
+            "name": "Civil Engineering",
+            "icon": "🏗️",
+            "items": []
+        },
+        "admission": {
+            "tag": "ADM",
+            "badge_color": UI.MAGENTA,
+            "folder": "Admission_Test",
+            "name": "Undergraduate Admission Tests",
+            "icon": "🎯",
+            "items": []
+        }
+    }
+
+    seen_urls: set[str] = set()
+    all_unsorted: list[tuple[str, str, str]] = []
+    failed_depts: list[str] = []
+    discovered_urls: dict[str, str] | None = None
+
+    for dept_key, endpoint_url in DEFAULT_PAGE_URLS.items():
+        standard = []
+        unsorted = []
+        try:
+            html = fetch_url_text(endpoint_url, timeout=15)
+            standard, unsorted = parse_page_questions(dept_key, html)
+        except Exception:
+            pass
+
+        # If direct page failed or returned 0 items, attempt discovery from homepage
+        if not standard:
+            if discovered_urls is None:
+                discovered_urls = discover_endpoints_from_home()
+            if dept_key in discovered_urls and discovered_urls[dept_key] != endpoint_url:
+                try:
+                    html = fetch_url_text(discovered_urls[dept_key], timeout=15)
+                    standard, unsorted = parse_page_questions(dept_key, html)
+                except Exception:
+                    pass
+
+        if not standard and not unsorted:
+            failed_depts.append(dept_key)
+        else:
+            for sem_folder, fn, pdf_url in standard:
+                if pdf_url not in seen_urls:
+                    seen_urls.add(pdf_url)
+                    catalog[dept_key]["items"].append((sem_folder, fn, pdf_url))
+            for item in unsorted:
+                if item[2] not in seen_urls:
+                    seen_urls.add(item[2])
+                    all_unsorted.append(item)
+
+    if all_unsorted:
+        catalog["unsorted"] = {
+            "tag": "UNS",
+            "badge_color": UI.CORAL,
+            "folder": "Unsorted",
+            "name": "Unsorted / Additional Papers",
+            "icon": "📁",
+            "items": all_unsorted
+        }
+
+    total_scanned = sum(len(v["items"]) for v in catalog.values())
+
+    if total_scanned > 0 and len(failed_depts) < len(DEFAULT_PAGE_URLS):
+        # Save fresh scan to local cache file
+        try:
+            cache_payload = {
+                "scanned_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "catalog": {
+                    k: {
+                        "tag": v["tag"],
+                        "folder": v["folder"],
+                        "name": v["name"],
+                        "icon": v["icon"],
+                        "items": v["items"]
+                    }
+                    for k, v in catalog.items()
+                }
+            }
+            with open(CATALOG_CACHE_FILE, "w", encoding="utf-8") as f:
+                json.dump(cache_payload, f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+        return catalog, "LIVE", f"Discovered {total_scanned} papers live from sec.ac.bd"
+
+    # Fallback to local cache if available
+    if CATALOG_CACHE_FILE.exists():
+        try:
+            with open(CATALOG_CACHE_FILE, "r", encoding="utf-8") as f:
+                cached_data = json.load(f)
+            cached_cat = cached_data.get("catalog", {})
+            if cached_cat:
+                color_map = {
+                    "cse": UI.CYAN,
+                    "eee": UI.YELLOW,
+                    "civil": UI.GREEN,
+                    "admission": UI.MAGENTA,
+                    "unsorted": UI.CORAL
+                }
+                for k, v in cached_cat.items():
+                    v["badge_color"] = color_map.get(k, UI.WHITE)
+                    v["items"] = [tuple(x) for x in v["items"]]
+                c_scanned = sum(len(v["items"]) for v in cached_cat.values())
+                t_str = cached_data.get("scanned_at", "previous session")
+                return cached_cat, "CACHED", f"Loaded {c_scanned} papers from cache ({t_str})"
+        except Exception:
+            pass
+
+    # Final fallback to hardcoded ALL_QUESTIONS
+    return ALL_QUESTIONS, "FALLBACK", "Network scan failed. Reverted to built-in catalog."
+
+
+def print_scan_diff(scanned_catalog: dict, chosen_keys: list[str]):
+    """Displays a color-coded diff between scanned catalog and built-in list."""
+    w = UI.width()
+    print(UI.box_top(w, title=f"{UI.BOLD}{UI.WHITE}SCAN DIFF (LIVE vs BUILT-IN CATALOG){UI.RESET}", border_color=UI.YELLOW))
+
+    total_new = 0
+    total_missing = 0
+    total_changed = 0
+
+    for dept_key in chosen_keys:
+        scanned_items = scanned_catalog.get(dept_key, {}).get("items", [])
+        base_items = ALL_QUESTIONS.get(dept_key, {}).get("items", [])
+
+        s_dict = {item[1]: item for item in scanned_items}
+        b_dict = {item[1]: item for item in base_items}
+
+        dept_meta = scanned_catalog.get(dept_key, ALL_QUESTIONS.get(dept_key, {}))
+        dept_name = dept_meta.get("name", dept_key.upper())
+        icon = dept_meta.get("icon", "📄")
+
+        new_files = [fn for fn in s_dict if fn not in b_dict]
+        missing_files = [fn for fn in b_dict if fn not in s_dict]
+        changed_files = [fn for fn in s_dict if fn in b_dict and s_dict[fn][2] != b_dict[fn][2]]
+
+        total_new += len(new_files)
+        total_missing += len(missing_files)
+        total_changed += len(changed_files)
+
+        dept_hdr = f"  {icon} {UI.BOLD}{dept_name}{UI.RESET}:"
+        print(UI.box_line(dept_hdr, w, border_color=UI.YELLOW))
+
+        if not new_files and not missing_files and not changed_files:
+            print(UI.box_line(f"     {UI.DIM}✔ Matches built-in catalog exactly ({len(s_dict)} files){UI.RESET}", w, border_color=UI.YELLOW))
+        else:
+            for nf in sorted(new_files):
+                line = f"     {UI.GREEN}+ NEW:{UI.RESET} {nf}"
+                print(UI.box_line(line, w, border_color=UI.YELLOW))
+            for mf in sorted(missing_files):
+                line = f"     {UI.RED}- MISSING:{UI.RESET} {mf}"
+                print(UI.box_line(line, w, border_color=UI.YELLOW))
+            for cf in sorted(changed_files):
+                line = f"     {UI.AMBER}* CHANGED URL:{UI.RESET} {cf}"
+                print(UI.box_line(line, w, border_color=UI.YELLOW))
+
+    print(UI.box_divider(w, border_color=UI.YELLOW))
+    summary = f"  📊 Summary: {UI.GREEN}+{total_new} new{UI.RESET}, {UI.RED}-{total_missing} missing{UI.RESET}, {UI.AMBER}*{total_changed} updated links{UI.RESET}"
+    print(UI.box_line(summary, w, border_color=UI.YELLOW))
+    print(UI.box_bottom(w, border_color=UI.YELLOW))
+    print()
+
+
+# ==================== User Interface & Menus ====================
 def print_banner():
     w = UI.width()
     print()
@@ -340,19 +667,30 @@ def print_banner():
     print()
 
 
-def print_menu():
+def print_menu(catalog: dict | None = None):
     w = UI.width()
+    cat = catalog or ALL_QUESTIONS
     title = f"{UI.BOLD}{UI.WHITE}SELECT ARCHIVE CATEGORY{UI.RESET}"
     print(UI.box_top(w, title=title, border_color=UI.BLUE))
     print(UI.box_line("", w, border_color=UI.BLUE))
 
+    cse_count = len(cat.get("cse", {}).get("items", []))
+    eee_count = len(cat.get("eee", {}).get("items", []))
+    ce_count = len(cat.get("civil", {}).get("items", []))
+    adm_count = len(cat.get("admission", {}).get("items", []))
+    total_count = sum(len(v.get("items", [])) for v in cat.values())
+
     options = [
-        ("1", "CSE",       "💻", "Computer Science & Engineering",      "14 Papers", UI.CYAN),
-        ("2", "EEE",       "⚡", "Electrical & Electronic Engineering", " 9 Papers", UI.YELLOW),
-        ("3", "Civil / CE","🏗️ ", "Civil Engineering",                  "15 Papers", UI.GREEN),
-        ("4", "Admission", "🎯", "Undergraduate Admission Tests",       " 3 Papers", UI.MAGENTA),
-        ("5", "ALL",       "🌐", "Download All 41 Papers (Full Bundle)", "41 Papers", UI.AMBER),
+        ("1", "CSE",       "💻", "Computer Science & Engineering",      f"{cse_count:>2} Papers", UI.CYAN),
+        ("2", "EEE",       "⚡", "Electrical & Electronic Engineering", f"{eee_count:>2} Papers", UI.YELLOW),
+        ("3", "Civil / CE","🏗️ ", "Civil Engineering",                  f"{ce_count:>2} Papers", UI.GREEN),
+        ("4", "Admission", "🎯", "Undergraduate Admission Tests",       f"{adm_count:>2} Papers", UI.MAGENTA),
+        ("5", "ALL",       "🌐", f"Download All {total_count} Papers (Full Bundle)", f"{total_count:>2} Papers", UI.AMBER),
     ]
+
+    if "unsorted" in cat and cat["unsorted"]["items"]:
+        uns_count = len(cat["unsorted"]["items"])
+        options.append(("6", "Unsorted", "📁", "Unsorted / Additional Papers", f"{uns_count:>2} Papers", UI.CORAL))
 
     for key, code, icon, desc, count, col in options:
         opt_text = f"  {UI.BOLD}{UI.WHITE}[{key}]{UI.RESET} {icon} {col}{UI.BOLD}{code:<11}{UI.RESET} {UI.WHITE}{desc}{UI.RESET}"
@@ -381,6 +719,7 @@ def get_interactive_choice() -> list[str]:
             sys.exit(0)
 
 
+# ==================== Core Downloader Engine ====================
 def download_file(item, base_dir: Path, force: bool = False):
     badge, tag_color, dept_folder, sem_folder, filename, url = item
     if sem_folder:
@@ -390,12 +729,14 @@ def download_file(item, base_dir: Path, force: bool = False):
 
     target_dir.mkdir(parents=True, exist_ok=True)
     target_path = target_dir / filename
+    part_path = target_dir / f"{filename}.part"
 
     # Check cache unless force is enabled
     if not force and target_path.exists() and target_path.stat().st_size > 1000:
         try:
             with open(target_path, "rb") as f:
-                if f.read(5).startswith(b"%PDF"):
+                header = f.read(4)
+                if header == b"%PDF":
                     return (item, True, target_path.stat().st_size, "CACHED")
         except Exception:
             pass
@@ -404,39 +745,61 @@ def download_file(item, base_dir: Path, force: bool = False):
     last_error = ""
     for attempt in range(max_retries):
         try:
-            data = None
+            if part_path.exists():
+                try:
+                    part_path.unlink()
+                except Exception:
+                    pass
+
             if HAVE_REQUESTS:
                 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-                resp = requests.get(url, headers=headers, timeout=30)
+                resp = requests.get(url, headers=headers, timeout=30, stream=True)
                 if resp.status_code == 200:
-                    data = resp.content
+                    with open(part_path, "wb") as f:
+                        for chunk in resp.iter_content(chunk_size=65536):
+                            if chunk:
+                                f.write(chunk)
                 else:
                     raise ConnectionError(f"HTTP {resp.status_code}")
             else:
-                import urllib.request
                 req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
                 with urllib.request.urlopen(req, timeout=30) as resp:
-                    data = resp.read()
+                    with open(part_path, "wb") as f:
+                        while True:
+                            chunk = resp.read(65536)
+                            if not chunk:
+                                break
+                            f.write(chunk)
 
-            if not data or not data.startswith(b"%PDF"):
-                raise ValueError("Payload is not a valid PDF file")
+            file_size = part_path.stat().st_size
+            if file_size < 100:
+                raise ValueError("Downloaded file is empty or suspiciously small")
 
-            with open(target_path, "wb") as f:
-                f.write(data)
+            with open(part_path, "rb") as f:
+                header = f.read(4)
+                if header != b"%PDF":
+                    raise ValueError(f"Corrupt or invalid PDF header: {header!r}")
 
-            return (item, True, len(data), "DOWNLOADED")
+            # Atomic rename / replace
+            part_path.replace(target_path)
+            return (item, True, file_size, "DOWNLOADED")
         except Exception as e:
             last_error = str(e)
+            if part_path.exists():
+                try:
+                    part_path.unlink()
+                except Exception:
+                    pass
             if attempt < max_retries - 1:
                 time.sleep(1)
 
     return (item, False, 0, last_error)
 
 
-def export_questions_to_json(output_file: Path):
+def export_questions_to_json(output_file: Path, catalog: dict = ALL_QUESTIONS):
     export_data = {}
     total = 0
-    for key, val in ALL_QUESTIONS.items():
+    for key, val in catalog.items():
         export_data[key] = {
             "name": val["name"],
             "folder": val["folder"],
@@ -452,6 +815,7 @@ def export_questions_to_json(output_file: Path):
     print(f"📄 Successfully exported {total} question paper records to {output_file}")
 
 
+# ==================== Main Application Entrypoint ====================
 def main():
     parser = argparse.ArgumentParser(
         description="Sylhet Engineering College (SEC) Official Question Archive Downloader",
@@ -459,8 +823,10 @@ def main():
         epilog="Examples:\n"
                "  python3 download_questions.py                  (Launches interactive visual menu)\n"
                "  python3 download_questions.py cse              (Download all CSE question papers)\n"
-               "  python3 download_questions.py all -o ~/Archive (Download entire 41-paper bundle)\n"
+               "  python3 download_questions.py all -o ~/Archive (Download entire question bundle)\n"
                "  python3 download_questions.py --dry-run cse    (Preview CSE question list without downloading)\n"
+               "  python3 download_questions.py --scan           (Scan live website sec.ac.bd for newest papers)\n"
+               "  python3 download_questions.py --scan --dry-run (Scan and show diff against built-in catalog)\n"
     )
     parser.add_argument(
         "category",
@@ -481,6 +847,11 @@ def main():
         help="Number of concurrent download threads (default: 5)"
     )
     parser.add_argument(
+        "--scan",
+        action="store_true",
+        help="Fetch live question catalog from sec.ac.bd instead of relying only on built-in list"
+    )
+    parser.add_argument(
         "--force",
         action="store_true",
         help="Re-download and overwrite existing cached PDF files"
@@ -499,14 +870,31 @@ def main():
 
     args = parser.parse_args()
 
+    # Active catalog resolution
+    active_catalog = ALL_QUESTIONS
+    scan_source = "BUILTIN"
+
+    if args.scan:
+        w = UI.width()
+        print(f"\n {UI.CYAN}🔍 Scanning live archive catalog from sec.ac.bd...{UI.RESET}")
+        scanned_catalog, scan_source, scan_msg = scan_live_catalog()
+        active_catalog = scanned_catalog
+
+        if scan_source == "LIVE":
+            print(f" {UI.GREEN}✔ {scan_msg}{UI.RESET}\n")
+        elif scan_source == "CACHED":
+            print(f" {UI.AMBER}⚠ {scan_msg}{UI.RESET}\n")
+        else:
+            print(f" {UI.RED}⚠ {scan_msg}{UI.RESET}\n")
+
     if args.export_json:
-        export_questions_to_json(args.export_json)
+        export_questions_to_json(args.export_json, catalog=active_catalog)
         return
 
     print_banner()
 
-    # 1. Environment & Storage Verification
-    base_dir = run_environment_checks(custom_dest=args.output)
+    # 1. Environment & Storage Verification (Directories NOT created if dry_run)
+    base_dir = run_environment_checks(custom_dest=args.output, dry_run=args.dry_run)
 
     # 2. Determine Category Selection
     if args.category:
@@ -516,20 +904,31 @@ def main():
             print(f" {UI.AQUA}➔{UI.RESET} {UI.DIM}CLI Selection:{UI.RESET} {UI.BOLD}{UI.CYAN}{cat_lower.upper()}{UI.RESET}\n")
         else:
             print(f" {UI.AMBER}⚠ Notice:{UI.RESET} Unknown category '{args.category}'. Falling back to interactive menu.\n")
-            print_menu()
+            print_menu(active_catalog)
             chosen = get_interactive_choice()
     else:
-        print_menu()
+        print_menu(active_catalog)
         chosen = get_interactive_choice()
+
+    # Include unsorted in 'all' if present
+    if "all" in (args.category or "").lower() or set(chosen) == {"cse", "eee", "civil", "admission"}:
+        if "unsorted" in active_catalog and active_catalog["unsorted"]["items"] and "unsorted" not in chosen:
+            chosen.append("unsorted")
 
     download_list = []
     for dept_key in chosen:
-        dept = ALL_QUESTIONS[dept_key]
+        if dept_key not in active_catalog:
+            continue
+        dept = active_catalog[dept_key]
         for sem_folder, fn, url in dept["items"]:
             download_list.append((dept["tag"], dept["badge_color"], dept["folder"], sem_folder, fn, url))
 
+    # 3. Dry Run and Scan Diff Handling
+    if args.dry_run and args.scan:
+        print_scan_diff(active_catalog, chosen)
+
     w = UI.width()
-    dept_tags = " ".join([f"{ALL_QUESTIONS[k]['badge_color']}[{ALL_QUESTIONS[k]['name']}]{UI.RESET}" for k in chosen])
+    dept_tags = " ".join([f"{active_catalog[k]['badge_color']}[{active_catalog[k]['name']}]{UI.RESET}" for k in chosen if k in active_catalog])
     
     print(UI.box_top(w, title=f"{UI.BOLD}{UI.WHITE}ACTIVE DOWNLOAD QUEUE{UI.RESET}", border_color=UI.PURPLE))
     print(UI.box_line(f"  📂 {UI.BOLD}Destination:{UI.RESET} {UI.CYAN}{base_dir}/<Dept>/<Semester>/{UI.RESET}", w, border_color=UI.PURPLE))
@@ -546,9 +945,10 @@ def main():
             badge, tag_color, dept_folder, sem_folder, fn, url = item
             subpath = f"{dept_folder}/{sem_folder}/{fn}" if sem_folder else f"{dept_folder}/{fn}"
             print(f"  • {tag_color}[{badge}]{UI.RESET} {subpath}")
-        print("\n✨ Dry run complete. No files were downloaded.")
+        print("\n✨ Dry run complete. No files or directories were created.")
         return
 
+    # 4. Multi-Threaded Download Execution
     start_time = time.time()
     total_files = len(download_list)
     success_count = 0
